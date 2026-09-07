@@ -6,6 +6,10 @@
 
 Features include a large QWERTY layout, numbers and symbols, a touch numpad, navigation keys, clipboard and Omaglide launchers, and mouse-click fallback.
 
+## Omablet suite
+
+Omaqwerty also works independently. Pair it with [Omablet](https://github.com/frostmute/omarchy-omablet) for tablet-mode controls and [Omaglide](https://github.com/frostmute/omarchy-omaglide) for a touch trackpad.
+
 ## Install
 
 ```sh
