@@ -1,0 +1,24 @@
+{
+  "schemaVersion": 1,
+  "id": "io.github.frostmute.tablet-keyboard",
+  "name": "Omaqwerty",
+  "version": "0.1.0",
+  "author": "Jonathan J Wagner",
+  "license": "MIT",
+  "homepage": "https://github.com/frostmute/omarchy-omaqwerty",
+  "repository": "https://github.com/frostmute/omarchy-omaqwerty",
+  "description": "Omaqwerty: a touch-first docked keyboard, numpad, navigation pad, clipboard, and trackpad launcher for Omarchy tablets.",
+  "kinds": ["panel", "bar-widget"],
+  "keepLoaded": true,
+  "entryPoints": {
+    "panel": "Panel.qml",
+    "barWidget": "BarWidget.qml"
+  },
+  "barWidget": {
+    "displayName": "Omaqwerty",
+    "description": "Toggle Omaqwerty",
+    "category": "Hardware",
+    "allowMultiple": false,
+    "defaultSection": "center"
+  }
+}
