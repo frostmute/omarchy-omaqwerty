@@ -17,6 +17,22 @@
   - **Double-Tap**: Double-tap or double-click the top drag bar to quickly toggle between docked and floating positions.
   - **Dock / Float Button**: Tap **Float** in the header to undock with one tap, or tap **Dock** to dock it back immediately.
 
+### Resizable & Touch-Safe Layout
+- **Dynamic Drag Resizing**: Freely resize the keyboard by dragging any of the 4 corner handles or 4 border edges. A visual diagonal dot grip indicator in the bottom-right corner provides immediate touch affordance. Resizing works seamlessly in both floating and docked modes (dynamically expanding or contracting Hyprland's reserved exclusive zone when docked).
+- **Usability Constraints**: Built-in minimum width and height boundaries ensure keys never shrink below ergonomic touch-target standards (~40–48px), preventing missed taps and fat-finger errors even on compact screens.
+- **Orientation-Aware Sizing**: Separate size bounds and custom dimensions are maintained for landscape and portrait tablet orientations, automatically adapting when the tablet rotates.
+- **Selectable Size Presets (S, M, L, Full)**: Tap the **Size** button in the header to open a quick-select popover with one-tap presets:
+  - **S (Compact)**: Minimal footprint, ideal for one-handed thumb typing or leaving maximum screen space visible for code and terminals.
+  - **M (Standard)**: Balanced two-handed typing layout (default).
+  - **L (Large)**: Expanded, spacious layout with oversized keys for high-accuracy typing on large tablets.
+  - **Full (Max Width)**: Fills the entire screen width when docked for edge-to-edge tablet typing.
+  - **Quick Cycle**: Double-tap the Size button to instantly cycle between presets (`S` → `M` → `L` → `Full`).
+  - **Reset Button**: One-tap "Reset to default size" button appears inside the Size menu when the keyboard is in a custom drag-resized state.
+- **Pinned Tool Bar & Scrollable Navigation**: The tools bar (Numpad, Clipboard, Trackpad, Size, Dock/Float, Close) remains firmly anchored to the right side at all times. If the keyboard is resized narrower, the navigation strip scrolls smoothly horizontally via flickable touch.
+- **Live Dimension Indicator**: Real-time width × height display in the drag bar and Size popover.
+- **Responsive Typography & Key Proportions**: Key labels, caps indicators, modifier badges, and header buttons dynamically scale with the keyboard dimensions so fonts never clip or feel oversized.
+- **Persistent Preferences**: Size preset, custom dimensions, floating position, and docked state are automatically saved to `~/.config/omarchy/omaqwerty.json` and restored across shell restarts and reboots.
+
 ### Full Standard QWERTY Modifiers
 - **Ctrl, Fn, Super/Cmd, and Alt**: Present directly on the bottom row across all keyboard layouts (letters, numbers, symbols, and numpad).
 - **Single-Tap Latch**: Tap a modifier once to highlight it and arm it for the next keypress (e.g. tap **Ctrl** then **c** to send `Ctrl+C`). It automatically disarms after the keystroke.
