@@ -264,6 +264,52 @@ Item {
         "-": "_", "=": "+", "[": "{", "]": "}", ";": ":",
         "'": "\"", ",": "<", ".": ">", "/": "?", "\\": "|", "`": "~"
     })
+    readonly property var evdevKeyCodes: ({
+        "Escape": 1,
+        "1": 2, "2": 3, "3": 4, "4": 5, "5": 6, "6": 7, "7": 8, "8": 9, "9": 10, "0": 11,
+        "-": 12, "=": 13, "BackSpace": 14, "Tab": 15,
+        "q": 16, "w": 17, "e": 18, "r": 19, "t": 20, "y": 21, "u": 22, "i": 23, "o": 24, "p": 25,
+        "[": 26, "]": 27, "Return": 28,
+        "a": 30, "s": 31, "d": 32, "f": 33, "g": 34, "h": 35, "j": 36, "k": 37, "l": 38,
+        ";": 39, "'": 40, "`": 41, "\\": 43,
+        "z": 44, "x": 45, "c": 46, "v": 47, "b": 48, "n": 49, "m": 50,
+        ",": 51, ".": 52, "/": 53, "space": 57,
+        "F1": 59, "F2": 60, "F3": 61, "F4": 62, "F5": 63, "F6": 64,
+        "F7": 65, "F8": 66, "F9": 67, "F10": 68, "F11": 87, "F12": 88,
+        "Print": 99, "Home": 102, "Up": 103, "Page_Up": 104, "Left": 105,
+        "Right": 106, "End": 107, "Down": 108, "Page_Down": 109, "Insert": 110, "Delete": 111
+    })
+    readonly property var shiftedEvdevKeyCodes: ({
+        "!": 2, "@": 3, "#": 4, "$": 5, "%": 6, "^": 7, "&": 8, "*": 9, "(": 10, ")": 11,
+        "_": 12, "+": 13, "{": 26, "}": 27, ":": 39, "\"": 40,
+        "~": 41, "|": 43, "<": 51, ">": 52, "?": 53
+    })
+
+    function dispatchSuperKey(keysym) {
+        let code = evdevKeyCodes[keysym]
+        let impliedShift = false
+        if (code === undefined) {
+            code = shiftedEvdevKeyCodes[keysym]
+            impliedShift = code !== undefined
+        }
+        if (code === undefined) {
+            console.warn("omaqwerty: no evdev mapping for Super chord:", keysym)
+            return
+        }
+
+        let modifiers = []
+        if (ctrl) modifiers.push(29)
+        if (alt) modifiers.push(56)
+        modifiers.push(125)
+        if (shift || impliedShift) modifiers.push(42)
+
+        let cmd = ["ydotool", "key"]
+        for (let i = 0; i < modifiers.length; i++) cmd.push(modifiers[i] + ":1")
+        cmd.push(code + ":1", code + ":0")
+        for (let i = modifiers.length - 1; i >= 0; i--) cmd.push(modifiers[i] + ":0")
+        enqueue(cmd)
+    }
+
 
     function rows() {
         return page === "abc" ? alphaRows : (page === "123" ? numberRows : (page === "numpad" ? numpadRows : symbolRows))
@@ -451,44 +497,38 @@ Item {
     }
 
     function dispatchKey(keysym) {
-        let mods = activeModifiers()
-        let cmd = ["wtype"]
-        for (let i = 0; i < mods.length; i++) {
-            cmd.push("-M", mods[i])
-        }
-        cmd.push("-k", keysym)
-        for (let i = mods.length - 1; i >= 0; i--) {
-            cmd.push("-m", mods[i])
-        }
-        enqueue(cmd)
-        clearSingleModifiers()
-    }
-
-    function dispatchChar(character) {
-        let hasNonShiftMods = ctrl || alt || superKey
-        if (hasNonShiftMods) {
+        if (superKey) {
+            dispatchSuperKey(keysym)
+        } else {
             let mods = activeModifiers()
-            let code = character.toLowerCase()
             let cmd = ["wtype"]
             for (let i = 0; i < mods.length; i++) {
                 cmd.push("-M", mods[i])
             }
-            cmd.push("-k", code)
+            cmd.push("-k", keysym)
             for (let i = mods.length - 1; i >= 0; i--) {
                 cmd.push("-m", mods[i])
             }
             enqueue(cmd)
-        } else {
-            let charToType = character
-            if (shift) {
-                if (/^[a-z]$/.test(charToType)) {
-                    charToType = charToType.toUpperCase()
-                } else if (shiftSymbolMap[charToType]) {
-                    charToType = shiftSymbolMap[charToType]
-                }
-            }
-            enqueue(["wtype", "--", charToType])
         }
+        clearSingleModifiers()
+    }
+
+    function dispatchChar(character) {
+        if (ctrl || alt || superKey) {
+            dispatchKey(character.toLowerCase())
+            return
+        }
+
+        let charToType = character
+        if (shift) {
+            if (/^[a-z]$/.test(charToType)) {
+                charToType = charToType.toUpperCase()
+            } else if (shiftSymbolMap[charToType]) {
+                charToType = shiftSymbolMap[charToType]
+            }
+        }
+        enqueue(["wtype", "--", charToType])
         clearSingleModifiers()
     }
 

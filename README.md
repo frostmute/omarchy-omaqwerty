@@ -74,10 +74,12 @@ Omaqwerty is part of the optional Omablet tablet experience:
 omarchy plugin add https://github.com/frostmute/omarchy-omaqwerty.git --enable
 ```
 
-Requires `wtype` for Wayland keyboard injection:
+Text entry uses `wtype`; Super shortcuts use `ydotool` so Hyprland receives
+physical-style key events:
 
 ```sh
-omarchy pkg add wtype
+omarchy pkg add wtype ydotool
+systemctl --user enable --now ydotool.service
 ```
 
 ## Remove
